@@ -1,40 +1,33 @@
-const { getTime, drive } = global.utils;
-if (!global.temp.welcomeEvent)
-	global.temp.welcomeEvent = {};
+const { getTime } = global.utils;
+const axios = require("axios");
+const fs = require("fs");
+const path = require("path");
+
+if (!global.temp.welcomeEvent) global.temp.welcomeEvent = {};
 
 module.exports = {
 	config: {
 		name: "welcome",
-		version: "1.8",
-		author: "NTKhang + Modified by You",
+		version: "2.0",
+		author: "NTKhang & Customized",
 		category: "events"
 	},
 
 	langs: {
-		vi: {
-			session1: "sáng",
-			session2: "trưa",
-			session3: "chiều",
-			session4: "tối",
-			welcomeMessage: "Cảm ơn bạn đã mời tôi vào nhóm!\nPrefix bot: %1\nĐể xem danh sách lệnh hãy nhập: %1help",
-			multiple1: "bạn",
-			multiple2: "các bạn",
-			defaultWelcomeMessage: "👤 𝚃𝚑𝚊̀𝚗𝚑 𝚟𝚒𝚎̂𝚗 mới: {userName}\n📥 Được thêm bởi: {addedBy}\nChào mừng {multiple} đến với {boxName}.\nChúc bạn có buổi {session} vui vẻ!"
-		},
 		en: {
-			session1: "𝚖𝚘𝚛𝚗𝚒𝚗𝚐",
-			session2: "𝚗𝚘𝚘𝚗",
-			session3: "𝚊𝚏𝚝𝚎𝚛𝚗𝚘𝚘𝚗",
-			session4: "𝚎𝚟𝚎𝚗𝚒𝚗𝚐",
-			welcomeMessage: "𝚃𝚑𝚊𝚗𝚔 𝚢𝚘𝚞 𝚏𝚘𝚛 𝚒𝚗𝚟𝚒𝚝𝚒𝚗𝚐 𝚖𝚎 𝚝𝚘 𝚝𝚑𝚎 𝚐𝚛𝚘𝚞𝚙!\n𝙱𝚘𝚝 𝚙𝚛𝚎𝚏𝚒𝚡: %1\n𝚃𝚘 𝚟𝚒𝚎𝚠 𝚝𝚑𝚎 𝚕𝚒𝚜𝚝 𝚘𝚏 𝚌𝚘𝚖𝚖𝚊𝚗𝚍𝚜, 𝚙𝚕𝚎𝚊𝚜𝚎 𝚎𝚗𝚝𝚎𝚛: %1𝚑𝚎𝚕𝚙",
-			multiple1: "𝚢𝚘𝚞",
-			multiple2: "𝚢𝚘𝚞 𝚐𝚞𝚢𝚜",
-			defaultWelcomeMessage: "╭──────────────────╮\n☺️𝙰𝚜𝚜𝚊𝚕𝚊𝚖𝚞𝚊𝚕𝚊𝚒𝚔𝚞𝚖\n╰──────────────────╯ \n𝙳𝚎𝚊𝚛✨{userName}✨\n.𝚆𝚎𝚕𝚌𝚘𝚖𝚎 {multiple} 𝚝𝚘 𝚝𝚑𝚎 𝚌𝚑𝚊𝚝 𝚐𝚛𝚘𝚞𝚙:{boxName}!\n𝙷𝚊𝚟𝚎 𝚊 𝚗𝚒𝚌𝚎 {session}!\n\n╭──────────────────╮\n    📥 𝙰𝚍𝚍𝚎𝚍 𝚋𝚢: {addedBy}\n╰──────────────────╯"
+			session1: "𝗺𝗼𝗿𝗻𝗶𝗻𝗴",
+			session2: "𝗻𝗼𝗼𝗻",
+			session3: "𝗮𝗳𝘁𝗲𝗿𝗻𝗼𝗼𝗻",
+			session4: "𝗲𝘃𝗲𝗻𝗶𝗻𝗴",
+			welcomeMessage: "━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n𝗛𝗜 𝗘𝗩𝗘𝗥𝗬𝗢𝗡𝗘👋🏼👋🏼👋🏼❁[ / ]𝗦𝗢𝗨𝗥𝗔𝗩😇 𝗕𝗢𝗧 𝗖𝗢𝗡𝗡𝗘𝗖𝗧𝗘𝗗 𝗦𝗨𝗖𝗖𝗘𝗦𝗙𝗨𝗟𝗟\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n𝗕𝗢𝗧 𝗔𝗗𝗠𝗜𝗡: SOURAV彡 নাথヅ\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n𝗙𝗔𝗖𝗘𝗕𝗢𝗢𝗞: https://www.facebook.com/profile.php?id=61577174606216 \n\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n𝗪𝗛𝗔𝗧𝗦 𝗔𝗣𝗣: wa.me/+8801880962478\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n𝗠𝗘𝗦𝗦𝗘𝗡𝗚𝗘𝗥: https://m.me/sourav.nath404 \n\n━━━━━━━━━━━━━━━━━━━━━━━━━━ ",
+			multiple1: "𝘆𝗼𝘂",
+			multiple2: "𝘆𝗼𝘂 𝗴𝘂𝘆𝘀",
+			defaultWelcomeMessage: `𝚆𝙴𝙻𝙲𝙾𝙼𝙴 𝚃𝙾 𝙾𝚄𝚁 𝙶𝚁𝙾𝚄𝙿😇😇 {userName}  𝚈𝙾𝚄 𝙰𝚁𝙴 𝚆𝙰𝚁𝙼𝙻𝚈 𝚆𝙴𝙻𝙲𝙾𝙼𝙴𝙳🥳🥳🥳  \n𝚆𝙴𝙻𝙻𝙲𝙾𝙼𝙴  {multiple} 𝚃𝙾 𝚃𝙷𝙴 𝙲𝙷𝙰𝚃 𝙱𝙾𝚇: {boxName}\n𝙷𝙰𝚅𝙴 𝙰 𝙽𝙸𝙲𝙴  {session}🐼♲︎︎︎\n𝙰𝚞𝚝𝚑𝚘𝚛: SOURAV彡 নাথヅ...`
 		}
 	},
 
 	onStart: async ({ threadsData, message, event, api, getLang }) => {
-		if (event.logMessageType == "log:subscribe")
+		if (event.logMessageType == "log:subscribe") {
 			return async function () {
 				const hours = getTime("HH");
 				const { threadID } = event;
@@ -42,92 +35,80 @@ module.exports = {
 				const prefix = global.utils.getPrefix(threadID);
 				const dataAddedParticipants = event.logMessageData.addedParticipants;
 
-				// if new member is bot
+				// If bot is added
 				if (dataAddedParticipants.some((item) => item.userFbId == api.getCurrentUserID())) {
-					if (nickNameBot)
-						api.changeNickname(nickNameBot, threadID, api.getCurrentUserID());
+					if (nickNameBot) api.changeNickname(nickNameBot, threadID, api.getCurrentUserID());
 					return message.send(getLang("welcomeMessage", prefix));
 				}
 
-				// store participants temporarily
-				if (!global.temp.welcomeEvent[threadID])
+				if (!global.temp.welcomeEvent[threadID]) {
 					global.temp.welcomeEvent[threadID] = {
 						joinTimeout: null,
 						dataAddedParticipants: []
 					};
+				}
 
 				global.temp.welcomeEvent[threadID].dataAddedParticipants.push(...dataAddedParticipants);
 				clearTimeout(global.temp.welcomeEvent[threadID].joinTimeout);
 
 				global.temp.welcomeEvent[threadID].joinTimeout = setTimeout(async function () {
 					const threadData = await threadsData.get(threadID);
-					if (threadData.settings.sendWelcomeMessage == false)
-						return;
+					if (threadData.settings.sendWelcomeMessage == false) return;
 
 					const dataAddedParticipants = global.temp.welcomeEvent[threadID].dataAddedParticipants;
-					const dataBanned = threadData.data.banned_ban || [];
 					const threadName = threadData.threadName;
-					const userName = [],
-						mentions = [];
-					let multiple = false;
-
-					if (dataAddedParticipants.length > 1)
-						multiple = true;
+					const userName = [], mentions = [];
+					let multiple = dataAddedParticipants.length > 1 ? true : false;
 
 					for (const user of dataAddedParticipants) {
-						if (dataBanned.some((item) => item.id == user.userFbId))
-							continue;
 						userName.push(user.fullName);
-						mentions.push({
-							tag: user.fullName,
-							id: user.userFbId
-						});
+						mentions.push({ tag: user.fullName, id: user.userFbId });
 					}
+
 					if (userName.length == 0) return;
-
-					// Get addedBy name
-					const addedByID = event.logMessageData?.author || null;
-					let addedByName = "Facebookuser";
-					if (addedByID) {
-						try {
-							const info = await api.getUserInfo(addedByID);
-							addedByName = info[addedByID]?.name || "Facebookuser";
-						} catch (e) {
-							console.error("Failed to fetch addedBy user info:", e);
-						}
-					}
-
 					let { welcomeMessage = getLang("defaultWelcomeMessage") } = threadData.data;
-					const form = {
-						mentions: welcomeMessage.match(/\{userNameTag\}/g) ? mentions : null
-					};
 					welcomeMessage = welcomeMessage
-						.replace(/\{userName\}|\{userNameTag\}/g, userName.join(", "))
-						.replace(/\{boxName\}|\{threadName\}/g, threadName)
+						.replace(/\{userName\}/g, userName.join(", "))
+						.replace(/\{boxName\}/g, threadName)
 						.replace(/\{multiple\}/g, multiple ? getLang("multiple2") : getLang("multiple1"))
-						.replace(/\{session\}/g,
-							hours <= 10 ? getLang("session1") :
-							hours <= 12 ? getLang("session2") :
-							hours <= 18 ? getLang("session3") :
-							getLang("session4"))
-						.replace(/\{addedBy\}/g, addedByName);
+						.replace(/\{session\}/g, hours <= 10 ? getLang("session1") : hours <= 12 ? getLang("session2") : hours <= 18 ? getLang("session3") : getLang("session4"));
 
-					form.body = welcomeMessage;
+					const form = { body: welcomeMessage, mentions };
 
-					if (threadData.data.welcomeAttachment) {
-						const files = threadData.data.welcomeAttachment;
-						const attachments = files.reduce((acc, file) => {
-							acc.push(drive.getFile(file, "stream"));
-							return acc;
-						}, []);
-						form.attachment = (await Promise.allSettled(attachments))
-							.filter(({ status }) => status == "fulfilled")
-							.map(({ value }) => value);
+					// **Fetch Random Video from JSON Server**
+					try {
+						const response = await axios.get("https://raw.githubusercontent.com/MR-MAHABUB-004/MAHABUB-BOT-STORAGE/refs/heads/main/events/welcome.json");
+						const videoList = response.data.videos; // JSON file এর "videos" array থেকে data নিচ্ছি
+						const randomVideoURL = videoList[Math.floor(Math.random() * videoList.length)].url;
+
+						// Download the video and store it temporarily
+						const videoPath = path.join(__dirname, "temp_video.mp4");
+						const videoResponse = await axios({
+							url: randomVideoURL,
+							method: "GET",
+							responseType: "stream"
+						});
+
+						// Save video to local storage
+						const writer = fs.createWriteStream(videoPath);
+						videoResponse.data.pipe(writer);
+
+						writer.on("finish", () => {
+							form.attachment = fs.createReadStream(videoPath);
+							message.send(form);
+						});
+
+						writer.on("error", (err) => {
+							console.error("Error saving video:", err);
+						});
+					} catch (error) {
+						console.error("Error fetching video:", error.message);
+						message.send(form);
 					}
 
-					message.send(form);
 					delete global.temp.welcomeEvent[threadID];
 				}, 1500);
 			};
+		}
 	}
 };
