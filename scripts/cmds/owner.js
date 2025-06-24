@@ -16,15 +16,15 @@ module.exports = {
 		envConfig: {}
 	},
 	onStart: async function ({ message }) {
-		const authorName = " ⩸_ 𝙽𝙸 𝚂 𝙰𝙽 _⩸ ";
+		const authorName = " ⩸_𝗦𝗢𝗨𝗥𝗔𝗩 _⩸ ";
 		const ownAge = "『 ⩸_ 20 _⩸ 』";
-		const messenger = " //m.me/nisan.005";
-		const authorFB = " //www.facebook.com/profile.php?id=61576178781718";
-		const authorNumber = "017××××××98";
-		const Status = "⩸__ 𝚁𝙻𝚂 𝚆𝙷𝙸𝚃 𝙵𝙰𝚁𝙸𝚈𝙰__⩸";
+		const messenger = " https://m.me/sourav.nath404 ";
+		const authorFB = " https://www.facebook.com/profile.php?id=61577174606216 ";
+		const authorNumber = "01880962478";
+		const Status = "⩸__𝙸𝙽 𝙰 𝚁𝙻𝚂 𝚆𝙸𝚃𝙷 𝚃𝙾𝙽𝙽𝙸__⩸";
 		const urls = [
-"https://drive.google.com/uc?id=1a72QhBuup4I3IcYhDblJBe1D__fyIh4k",
-"https://drive.google.com/uc?id=1WPeoXpdO7OZ1y9NiyGgYdwsQawV21Oju"
+"https://drive.google.com/uc?export=view&id=1xUBIlUfnukeF7qT67-XiBvWhg5jVtVo4",
+"https://drive.google.com/uc?export=view&id=1sF-Oo8E6ZT-oeFTSVWAVHgfUDOdRUmxO"
 ];
 		const link = urls[Math.floor(Math.random() * urls.length)];
 		const now = moment().tz('Asia/Jakarta');
@@ -50,8 +50,8 @@ module.exports = {
 \⏰彡𝑁𝑜𝑤 𝑇𝑖𝑚𝑒 : ${time}
 \🔰彡𝐴𝑛𝑦 𝐻𝑒𝑙𝑝 𝐶𝑜𝑛𝑡𝑎𝑐𝑡 : ${messenger}__⩸
 \📛彡𝐵𝑜𝑡 𝐼𝑠 𝑅𝑢𝑛𝑛𝑖𝑛𝑔 𝐹𝑜𝑟 : ${uptimeString}
-    𝑻𝒈:  //t.me/nisan_editz
-    𝑰𝒏𝒔𝒕𝒂:  //www.instagram.com/im_editz_x2.0?
+    𝑻𝒈: ❎❎❎❎
+    𝑰𝒏𝒔𝒕𝒂: ❎❎❎❎
 \===============`,
 			attachment: await global.utils.getStreamFromURL(link)
 		});
