@@ -45,7 +45,7 @@ module.exports = {
 			confirmThisThread: "Please react to this message to confirm change prefix in your box chat",
 			successGlobal: "Changed prefix of system bot to: %1",
 			successThisThread: "Changed prefix in your box chat to: %1",
-			myPrefix: "╭━━━━━━ [ 𝚈𝙾𝚄𝚁 𝙽𝙸𝚂𝙰𝙽 ] ━━━━━━╮\n┃🔰 𝚂𝚈𝚂𝚃𝙴𝙼 𝙿𝚁𝙴𝙵𝙸𝚇: [ %1 ]\n┃🔰 𝚈𝙾𝚄𝚁 𝙱𝙾𝚇 𝙲𝙷𝙰𝚃 𝙿𝚁𝙴𝙵𝙸𝚇: [ %2 ]\n╰━━━━━━━━━━━━━━━━━━━━━━╯"
+			myPrefix: "╭━━━━━━ [ 𝚈𝙾𝚄𝚁 𝚂𝙾𝚄𝚁𝙰𝚅 ] ━━━━━━╮\n┃🔰 𝚂𝚈𝚂𝚃𝙴𝙼 𝙿𝚁𝙴𝙵𝙸𝚇: [ %1 ]\n┃🔰 𝚈𝙾𝚄𝚁 𝙱𝙾𝚇 𝙲𝙷𝙰𝚃 𝙿𝚁𝙴𝙵𝙸𝚇: [ %2 ]\n╰━━━━━━━━━━━━━━━━━━━━━━╯"
 		}
 	},
 
@@ -108,7 +108,7 @@ module.exports = {
     });
     const xyrene = {
       body: getLang("myPrefix", global.GoatBot.config.prefix, utils.getPrefix(event.threadID)),
-      attachment: await global.utils.getStreamFromURL("https://drive.google.com/uc?id=1a72QhBuup4I3IcYhDblJBe1D__fyIh4k")
+      attachment: await global.utils.getStreamFromURL("https://drive.google.com/uc?export=view&id=1qttSWSOYRu9SfEI2HBaUDVX6pT5EtP8G")
         };
     if (event.body && event.body.toLowerCase() === "prefix")
       return () => {

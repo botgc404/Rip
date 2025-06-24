@@ -26,7 +26,7 @@ module.exports = {
 				let img = res2.url
 
 				const form = {
-					body: `𝙽𝚒𝚂𝚊𝙽`
+					body: `𝚂𝙾𝚄𝚁𝙰𝚅`
 
 				};
 				if (img)
@@ -47,7 +47,7 @@ module.exports = {
 				let img1 = res2.url
 
 				const form = {
-					body: `   「 𝙽𝙸𝚂𝙰𝙽 𝚁𝙰𝙽𝙳𝙾𝙼 𝚆𝙰𝙸𝙵𝚄 」   `
+					body: `   「 𝚂𝙾𝚄𝚁𝙰𝚅 𝚁𝙰𝙽𝙳𝙾𝙼 𝚆𝙰𝙸𝙵𝚄 」   `
 
 				};
 				if (img1)
