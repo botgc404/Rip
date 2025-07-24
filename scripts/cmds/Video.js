@@ -38,7 +38,7 @@ async function getAPIUrl() {
 module.exports = {
   config: {
     name: "video",
-    aliases: ["videoDownload"],
+    aliases: ["ভিডিও"],
     version: "1.0",
     author: "‎MR᭄﹅ MAHABUB﹅ メꪜ",
     countDown: 5,
