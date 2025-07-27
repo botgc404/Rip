@@ -1,131 +1,79 @@
 const axios = require("axios");
-const fs = require("fs");
+const fs = require("fs-extra");
 const path = require("path");
-const ytSearch = require("yt-search");
-const https = require("https");
-
-function deleteAfterTimeout(filePath, timeout = 15000) {
-  setTimeout(() => {
-    if (fs.existsSync(filePath)) {
-      fs.unlink(filePath, (err) => {
-        if (!err) {
-          console.log(`✅ Deleted file: ${filePath}`);
-        } else {
-          console.error(`❌ Error deleting file: ${filePath}`);
-        }
-      });
-    }
-  }, timeout);
-}
-
-async function getAPIUrl() {
-  try {
-    console.log("🔄 Fetching API URL from JSON...");
-    const response = await axios.get('https://raw.githubusercontent.com/MR-MAHABUB-004/MAHABUB-BOT-STORAGE/refs/heads/main/APIURL.json');
-    console.log("✅ Successfully fetched API URL JSON:", response.data);
-
-    if (response.data && response.data.YouTube) {
-      return response.data.YouTube;
-    } else {
-      throw new Error("YouTube field not found in the JSON.");
-    }
-  } catch (error) {
-    console.error("❌ Failed to fetch API URL:", error.message);
-    throw new Error("Failed to load API URL.");
-  }
-}
 
 module.exports = {
   config: {
     name: "video",
-    aliases: ["ভিডিও"],
-    version: "1.0",
-    author: "‎MR᭄﹅ MAHABUB﹅ メꪜ",
+    aliases: ["ভিডিও", "video"],
+    version: "2.0.1",
+    author: "IMRAN (Modified by ChatGPT)",
     countDown: 5,
     role: 0,
-    shortDescription: "Download a video from YouTube",
-    longDescription: "Download a video from YouTube using a provided API.",
-    category: "user",
-    guide: "{p}{n}video <video_name>",
+    shortDescription: "Download a video from YouTube by name",
+    longDescription: "Search and download a YouTube video using public APIs.",
+    category: "media",
+    guide: "{p}{n} <video name>",
   },
+
   onStart: async function ({ api, event, args }) {
-    if (args.length === 0) {
-      return api.sendMessage("⚠️ Please provide a video name to search.", event.threadID);
-    }
-
-    const videoName = args.join(" ");
-    const processingMessage = await api.sendMessage(
-      `🔍 Searching for video "${videoName}"...`,
-      event.threadID,
-      null,
-      event.messageID
-    );
-
-    try {
-      const searchResults = await ytSearch(videoName);
-      if (!searchResults || !searchResults.videos.length) {
-        throw new Error("No results found for your search query.");
-      }
-
-      const topResult = searchResults.videos[0];
-      const videoUrl = `https://www.youtube.com/watch?v=${topResult.videoId}`;
-
-      const downloadDir = path.join(__dirname, "cache");
-      if (!fs.existsSync(downloadDir)) {
-        fs.mkdirSync(downloadDir, { recursive: true });
-      }
-
-      const safeTitle = topResult.title.replace(/[^a-zA-Z0-9]/g, "_");
-      const downloadPath = path.join(downloadDir, `${safeTitle}.mp4`);
-
-      const apiUrl = await getAPIUrl();
-      const downloadApiUrl = `${apiUrl}/ytmp4?url=${encodeURIComponent(videoUrl)}`;
-      let fileDownloaded = false;
-
-      try {
-        const { data } = await axios.get(downloadApiUrl);
-        if (data && data.download && data.download.url) {
-          const downloadUrl = data.download.url.replace("http:", "https:");
-          const file = fs.createWriteStream(downloadPath);
-
-          await new Promise((resolve, reject) => {
-            https.get(downloadUrl, (response) => {
-              if (response.statusCode === 200) {
-                response.pipe(file);
-                file.on("finish", () => {
-                  file.close(resolve);
-                  fileDownloaded = true;
-                });
-              } else {
-                reject(new Error(`Failed to download file. Status code: ${response.statusCode}`));
-              }
-            }).on("error", reject);
-          });
-        }
-      } catch (apiError) {
-        console.error("❌ API error:", apiError.message);
-      }
-
-      if (!fileDownloaded) {
-        console.log("⚠️ Video download failed.");
-        return api.sendMessage(`❌ Failed to download the video: ${videoName}`, event.threadID, event.messageID);
-      }
-
-      api.setMessageReaction("✅", event.messageID, () => {}, true);
-
-      await api.sendMessage(
-        {
-          attachment: fs.createReadStream(downloadPath),
-          body: `🎬 Title: ${topResult.title}`,
-        },
+    const query = args.join(" ");
+    if (!query) {
+      return api.sendMessage(
+        "⚠️ Please provide a video name!\n\nUsage: /video <name>",
         event.threadID,
         event.messageID
       );
-
-      deleteAfterTimeout(downloadPath);
-    } catch (error) {
-      console.error(`❌ Error: ${error.message}`);
-      api.sendMessage(`❌ Failed: ${error.message}`, event.threadID, event.messageID);
     }
-  },
+
+    let loadingMsgID = null;
+
+    try {
+      // Step 1: Notify searching
+      const loading = await api.sendMessage(`🔍 Searching for "${query}"...\n⏳ Please wait...`, event.threadID);
+      loadingMsgID = loading.messageID;
+
+      // Step 2: Search video
+      const searchRes = await axios.get(`https://betadash-search-download.vercel.app/yt?search=${encodeURIComponent(query)}`);
+      const video = searchRes.data[0];
+      if (!video || !video.url) throw new Error("No video found for your search.");
+
+      // Step 3: Notify downloading
+      await api.unsendMessage(loadingMsgID);
+      const downloading = await api.sendMessage(`🎬 Found: ${video.title}\n⬇️ Downloading...`, event.threadID);
+      loadingMsgID = downloading.messageID;
+
+      // Step 4: Get download link
+      const apiKey = "6c9542b5-7070-48cb-b325-80e1ba65a451";
+      const dlRes = await axios.get(`https://kaiz-apis.gleeze.com/api/ytmp4?url=${video.url}&quality=360&apikey=${apiKey}`);
+      const downloadUrl = dlRes.data.download_url;
+      if (!downloadUrl) throw new Error("No downloadable link found.");
+
+      // Step 5: Download and save
+      const videoBuffer = (await axios.get(downloadUrl, { responseType: "arraybuffer" })).data;
+      const cacheDir = path.join(__dirname, "cache");
+      await fs.ensureDir(cacheDir);
+      const filePath = path.join(cacheDir, `video_${Date.now()}.mp4`);
+      await fs.writeFile(filePath, videoBuffer);
+
+      // Step 6: Send video
+      const msg = {
+        body: `━━𝗦𝗢𝗨𝗥𝗔𝗩 𝗕𝗢𝗧━━\n🎬 𝗧𝗶𝘁𝗹𝗲: ${video.title}\n⏱️ 𝗗𝘂𝗿𝗮𝘁𝗶𝗼𝗻: ${video.time}\n━━━━━━━━━━━━━━━━━━\n\n✅ Here is your video!`,
+        attachment: fs.createReadStream(filePath)
+      };
+
+      await api.sendMessage(msg, event.threadID, async () => {
+        await fs.unlink(filePath); // auto delete
+      }, event.messageID);
+
+      if (loadingMsgID) await api.unsendMessage(loadingMsgID);
+
+    } catch (err) {
+      console.error("❌ Video command error:", err.message || err);
+      if (loadingMsgID) {
+        try { await api.unsendMessage(loadingMsgID); } catch (e) {}
+      }
+      api.sendMessage("❌ Failed to download video. Try another keyword or try later!", event.threadID, event.messageID);
+    }
+  }
 };
