@@ -18,7 +18,7 @@ function deleteAfterTimeout(filePath, timeout = 15000) {
 module.exports = {
   config: {
     name: "t",
-    aliases: ["গান", "gan"],
+    aliases: ["গান", "song"],
     version: "3.2",
     author: "‎MR᭄﹅ MAHABUB﹅ メꪜ",
     countDown: 5,
@@ -111,63 +111,6 @@ module.exports = {
         event.threadID,
         event.messageID
       );
-    }
-  },
-};    const songName = args.join(" ");
-    let downloadingMsgID;
-
-    try {
-      const wait = await api.sendMessage(`📥 Downloading "${songName}"...`, event.threadID);
-      downloadingMsgID = wait.messageID;
-
-      const result = await ytSearch(songName);
-      if (!result.videos || result.videos.length === 0) throw new Error("No YouTube results.");
-
-      const top = result.videos[0];
-      const ytUrl = `https://youtu.be/${top.videoId}`;
-      const cdnUrl = `https://ytdl-8ln5.onrender.com/cdn?url=${encodeURIComponent(ytUrl)}`;
-      const { data } = await axios.get(cdnUrl);
-
-      if (!data.status || !data.cdna) throw new Error("Audio link not found in API.");
-
-      const title = data.title || "Unknown Title";
-      const audioLink = data.cdna;
-
-      const safeFile = title.replace(/[^a-zA-Z0-9]/g, "_").slice(0, 30);
-      const ext = audioLink.includes(".mp3") ? "mp3" : "m4a"; // extension check
-      const filePath = path.join(__dirname, "cache", `${safeFile}.${ext}`);
-
-      if (!fs.existsSync(path.dirname(filePath))) {
-        fs.mkdirSync(path.dirname(filePath), { recursive: true });
-      }
-
-      const file = fs.createWriteStream(filePath);
-      await new Promise((resolve, reject) => {
-        https.get(audioLink, (res) => {
-          if (res.statusCode === 200) {
-            res.pipe(file);
-            file.on("finish", () => file.close(resolve));
-          } else reject(new Error(`Download failed [${res.statusCode}]`));
-        }).on("error", reject);
-      });
-
-      if (downloadingMsgID) api.unsendMessage(downloadingMsgID);
-      api.setMessageReaction("✅", event.messageID, () => {}, true);
-
-      await api.sendMessage(
-        {
-          body: `🎶 Title: ${title}`,
-          attachment: fs.createReadStream(filePath),
-        },
-        event.threadID,
-        event.messageID
-      );
-
-      deleteAfterTimeout(filePath, 15000);
-    } catch (err) {
-      console.error("❌ Error:", err.message);
-      if (downloadingMsgID) api.unsendMessage(downloadingMsgID);
-      api.sendMessage(`❌ Failed: ${err.message}`, event.threadID, event.messageID);
     }
   },
 };
